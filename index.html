@@ -215,7 +215,7 @@
         <div class="form-section py-3">
             <div class="container">
                 <div class="p-4 rounded">
-                    <form id="orderForm" action="mailto:itura.name.ng@gmail.com" method="post" enctype="text/plain">
+                    <form id="orderForm" onsubmit="sendEmail(event)">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -239,27 +239,27 @@
                                 <div class="form-group">
                                     <label for="productType">Select Product Type</label>
                                     <select class="form-control" id="productType" name="productType" required>
-                    <option value="">Choose...</option>
-                    <option value="starter_pack">STARTER PACK N25,000</option>
-                    <option value="mini_combo">MINI COMBO N45,000</option>
-                    <option value="premium_pack">PREMIUM PACK N65,000</option>
-                    <option value="itura_detor">ITURA DETOR N13,000</option>
-                  </select>
+                                        <option value="">Choose...</option>
+                                        <option value="starter_pack">STARTER PACK N25,000</option>
+                                        <option value="mini_combo">MINI COMBO N45,000</option>
+                                        <option value="premium_pack">PREMIUM PACK N65,000</option>
+                                        <option value="itura_detor">ITURA DETOR N13,000</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="deliveryType">Select Delivery Type</label>
                                     <select class="form-control" id="deliveryType" name="deliveryType" required>
-                    <option value="">Choose...</option>
-                    <option value="immediately_today">IMMEDIATELY TODAY</option>
-                    <option value="tomorrow">TOMORROW</option>
-                    <option value="next_tomorrow">NEXT TOMORROW</option>
-                  </select>
+                                        <option value="">Choose...</option>
+                                        <option value="immediately_today">IMMEDIATELY TODAY</option>
+                                        <option value="tomorrow">TOMORROW</option>
+                                        <option value="next_tomorrow">NEXT TOMORROW</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button type="submit" class="btn btn-primary font-weight-bold" onclick="submitForm()">Submit</button>
+                                <button type="submit" class="btn btn-primary font-weight-bold">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -305,15 +305,33 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Custom JavaScript -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
-        function submitForm() {
-            var form = document.getElementById("orderForm");
-            if (form.checkValidity()) {
-                alert("Your form has been submitted!");
-                form.reset();
-            } else {
-                alert("Please fill in all required fields.");
-            }
+        (function() {
+            emailjs.init("T1yFzchW92smcQDx7");
+        })();
+
+        function sendEmail(event) {
+            event.preventDefault();
+
+            var templateParams = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                address: document.getElementById('address').value,
+                productType: document.getElementById('productType').value,
+                deliveryType: document.getElementById('deliveryType').value,
+            };
+
+            emailjs.send("service_xnc1z1y", "template_wlyrty4", templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert('Order submitted successfully!');
+                    document.getElementById('orderForm').reset();
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to submit order. Please try again.');
+                });
         }
     </script>
 </body>
